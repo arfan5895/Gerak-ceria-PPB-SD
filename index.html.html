@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gerak Ceria — Belajar PBB dan Gerak Dasar</title>
+<meta name="theme-color" content="#1C6DD0">
+<style>
+  :root{
+    --biru:#1C6DD0; --biru-muda:#4FB0F4; --kuning:#FFC93C; --oranye:#FF7A45;
+    --hijau:#43C59E; --ungu:#9B5DE5; --merah:#EF476F;
+    --krem:#FFF6E5; --putih:#FFFFFF; --tinta:#28324A; --abu:#6B7A99;
+    --judul:"Comic Sans MS","Chalkboard SE","Baloo 2",system-ui,sans-serif;
+    --teks:"Comic Sans MS","Chalkboard SE",system-ui,-apple-system,"Segoe UI",sans-serif;
+    --bulat:22px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:var(--teks); color:var(--tinta); font-size:17px; line-height:1.6;
+    background:var(--krem);
+    background-image:radial-gradient(circle at 12% 8%, rgba(255,201,60,.35) 0 12%, transparent 12.5%),
+                     radial-gradient(circle at 88% 22%, rgba(79,176,244,.3) 0 10%, transparent 10.5%),
+                     radial-gradient(circle at 20% 88%, rgba(67,197,158,.28) 0 11%, transparent 11.5%),
+                     radial-gradient(circle at 92% 78%, rgba(155,93,229,.22) 0 9%, transparent 9.5%);
+    background-attachment:fixed;
+    -webkit-font-smoothing:antialiased;
+  }
+  .bungkus{max-width:820px;margin:0 auto;padding:0 16px 90px}
+
+  /* ---------- kepala ---------- */
+  header{
+    background:linear-gradient(135deg,var(--biru),var(--biru-muda));
+    color:#fff; padding:16px 0 20px; border-bottom:6px solid var(--kuning);
+    border-radius:0 0 30px 30px; box-shadow:0 6px 0 rgba(28,109,208,.25);
+  }
+  .kepala-isi{max-width:820px;margin:0 auto;padding:0 16px;display:flex;align-items:center;gap:12px}
+  .maskot{
+    width:56px;height:56px;border-radius:50%;background:var(--kuning);flex:none;
+    display:grid;place-items:center;font-size:30px;box-shadow:0 4px 0 rgba(0,0,0,.15);
+    animation:goyangMaskot 2.4s ease-in-out infinite;
+  }
+  @keyframes goyangMaskot{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+  header h1{font-family:var(--judul);font-size:clamp(22px,6vw,30px);margin:0;line-height:1.1;text-shadow:0 3px 0 rgba(0,0,0,.15)}
+  header p{margin:2px 0 0;font-size:13px;opacity:.95}
+  .tombol-atas{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+  .kecil{
+    border:0;background:rgba(255,255,255,.22);color:#fff;font-family:var(--teks);font-weight:700;
+    font-size:13px;padding:8px 12px;border-radius:999px;cursor:pointer;
+  }
+  .kecil[aria-pressed="true"]{background:var(--kuning);color:var(--tinta)}
+  .kecil:focus-visible{outline:3px solid #fff;outline-offset:2px}
+
+  /* ---------- sapaan & bintang ---------- */
+  .sapa{
+    background:var(--putih);border-radius:var(--bulat);padding:14px 16px;margin-top:18px;
+    display:flex;align-items:center;gap:12px;box-shadow:0 5px 0 rgba(40,50,74,.08);
+  }
+  .sapa .kata{flex:1;font-size:15.5px}
+  .bintang-kotak{background:var(--kuning);border-radius:16px;padding:8px 14px;font-family:var(--judul);font-size:19px;flex:none}
+
+  .judul-bagian{font-family:var(--judul);font-size:20px;margin:24px 0 12px;display:flex;align-items:center;gap:8px}
+
+  /* ---------- kartu materi ---------- */
+  .kisi{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+  .kartu{
+    border:0;cursor:pointer;text-align:left;font-family:var(--teks);color:var(--tinta);
+    background:var(--putih);border-radius:var(--bulat);padding:16px;
+    box-shadow:0 6px 0 rgba(40,50,74,.12); transition:transform .15s ease, box-shadow .15s ease;
+    display:flex;gap:12px;align-items:flex-start;position:relative;overflow:hidden;
+  }
+  .kartu:hover{transform:translateY(-4px);box-shadow:0 10px 0 rgba(40,50,74,.14)}
+  .kartu:active{transform:translateY(2px);box-shadow:0 3px 0 rgba(40,50,74,.12)}
+  .kartu:focus-visible{outline:3px solid var(--biru);outline-offset:3px}
+  .kartu .ikon{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;font-size:27px;flex:none}
+  .kartu .nomor{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--abu)}
+  .kartu .jd{font-family:var(--judul);font-size:17px;line-height:1.2;margin-top:2px}
+  .kartu .lencana{position:absolute;top:10px;right:12px;font-size:19px}
+
+  /* ---------- tab ---------- */
+  .tab{display:flex;gap:8px;overflow-x:auto;padding:6px 0 12px;-webkit-overflow-scrolling:touch}
+  .tab button{
+    border:3px solid transparent;background:var(--putih);color:var(--tinta);
+    font-family:var(--teks);font-weight:700;font-size:14.5px;padding:9px 16px;border-radius:999px;
+    cursor:pointer;white-space:nowrap;box-shadow:0 4px 0 rgba(40,50,74,.1);
+  }
+  .tab button[aria-pressed="true"]{background:var(--biru);color:#fff}
+  .tab button:focus-visible{outline:3px solid var(--oranye);outline-offset:2px}
+
+  .panel{background:var(--putih);border-radius:var(--bulat);padding:18px;box-shadow:0 6px 0 rgba(40,50,74,.1);animation:masuk .2s ease}
+  @keyframes masuk{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  h2{font-family:var(--judul);font-size:23px;margin:6px 0 4px;line-height:1.2}
+  h3{font-family:var(--judul);font-size:18px;margin:20px 0 8px}
+  p{margin:0 0 12px}
+  .catatan{color:var(--abu);font-size:14.5px}
+
+  .kotak-def{background:var(--krem);border-radius:18px;padding:14px 16px;border-left:8px solid var(--kuning);margin-bottom:14px}
+  ul.rapi{margin:0;padding-left:22px}
+  ul.rapi li{margin-bottom:8px}
+  ol.langkah{list-style:none;counter-reset:l;margin:0;padding:0}
+  ol.langkah li{counter-increment:l;position:relative;padding-left:46px;margin-bottom:14px}
+  ol.langkah li::before{
+    content:counter(l);position:absolute;left:0;top:-2px;width:32px;height:32px;border-radius:12px;
+    background:var(--biru);color:#fff;display:grid;place-items:center;font-family:var(--judul);font-size:16px;
+  }
+  .main{border:3px dashed rgba(40,50,74,.15);border-radius:18px;padding:14px;margin-bottom:12px;background:#fff}
+  .main b{display:block;font-family:var(--judul);font-size:17px;margin-bottom:4px}
+
+  /* ---------- panggung animasi ---------- */
+  .panggung{
+    background:linear-gradient(180deg,#8ED0FF, #C9ECFF 60%, #A8E6A1 60%, #8FDD8A);
+    border-radius:20px;overflow:hidden;position:relative;padding:6px 6px 0;
+  }
+  .panggung svg{display:block;width:100%;height:auto;max-height:270px}
+  .ket{background:rgba(40,50,74,.82);color:#fff;font-size:14.5px;padding:10px 14px;margin:0 -6px;line-height:1.45}
+  .kendali{display:flex;gap:8px;margin:12px 0 4px;flex-wrap:wrap}
+  .kendali button, .unggah{
+    border:0;background:var(--kuning);color:var(--tinta);font-family:var(--teks);font-weight:700;font-size:14.5px;
+    padding:10px 16px;border-radius:999px;cursor:pointer;box-shadow:0 4px 0 rgba(40,50,74,.18);
+    display:inline-flex;align-items:center;gap:6px;
+  }
+  .kendali button[aria-pressed="true"]{background:var(--biru);color:#fff}
+  .kendali .biru{background:var(--biru);color:#fff}
+  .kendali .hijau{background:var(--hijau);color:#fff}
+  .kendali button:active,.unggah:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(40,50,74,.18)}
+  .unggah input{display:none}
+
+  /* figur */
+  .figur line,.figur circle,.figur path{stroke:#28324A;stroke-width:8;stroke-linecap:round;fill:none}
+  .figur .kepala{fill:#FFD9A0;stroke:#28324A;stroke-width:5}
+  .figur .baju{stroke:var(--merah);stroke-width:16}
+  .topi{fill:var(--biru);stroke:none}
+  .bola{fill:var(--oranye);stroke:#28324A;stroke-width:4}
+  .tanah{stroke:rgba(40,50,74,.25);stroke-width:4;stroke-dasharray:12 10}
+  .lgn{transform-box:view-box;transform-origin:120px 96px}
+  .kk{transform-box:view-box;transform-origin:120px 140px}
+  .figur,.bola{transform-box:view-box}
+  .figur{transform-origin:120px 190px}
+
+  @keyframes ayunA{from{transform:rotate(34deg)}to{transform:rotate(-34deg)}}
+  @keyframes ayunB{from{transform:rotate(-34deg)}to{transform:rotate(34deg)}}
+  @keyframes bob{from{transform:translateY(0)}to{transform:translateY(-7px)}}
+  @keyframes napas{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+  @keyframes hormatLengan{0%,20%{transform:rotate(0)}45%,80%{transform:rotate(-152deg)}100%{transform:rotate(0)}}
+  @keyframes putarBadan{0%,15%{transform:rotate(0)}45%,70%{transform:rotate(90deg)}100%{transform:rotate(0)}}
+  @keyframes balikBadan{0%,15%{transform:rotate(0)}50%,80%{transform:rotate(180deg)}100%{transform:rotate(0)}}
+  @keyframes lencangLengan{0%,20%{transform:rotate(0)}50%,85%{transform:rotate(-88deg)}100%{transform:rotate(0)}}
+  @keyframes lututNaik{0%,100%{transform:rotate(0)}50%{transform:rotate(-52deg)}}
+  @keyframes lompatFigur{0%,100%{transform:translateY(0)}18%{transform:translateY(12px)}45%{transform:translateY(-58px)}72%{transform:translateY(8px)}}
+  @keyframes lenganAtas{0%,100%{transform:rotate(18deg)}45%{transform:rotate(-120deg)}}
+  @keyframes putarPenuh{to{transform:rotate(360deg)}}
+  @keyframes goyangBadan{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+  @keyframes lemparLengan{0%{transform:rotate(150deg)}35%{transform:rotate(140deg)}60%{transform:rotate(-40deg)}100%{transform:rotate(150deg)}}
+  @keyframes bolaLempar{0%,45%{transform:translate(0,0);opacity:1}80%{transform:translate(110px,-56px);opacity:1}95%,100%{transform:translate(140px,6px);opacity:0}}
+  @keyframes tendangKaki{0%,55%,100%{transform:rotate(0)}30%{transform:rotate(-62deg)}}
+  @keyframes bolaTendang{0%,30%{transform:translate(0,0);opacity:1}75%{transform:translate(120px,-40px);opacity:1}92%,100%{transform:translate(140px,-6px);opacity:0}}
+
+  svg.gerak{--spd:1}
+  svg.gerak.lambat{--spd:2.2}
+  svg.gerak.jeda *{animation-play-state:paused!important}
+
+  .a-sempurna .figur{animation:napas calc(var(--spd)*2.6s) infinite ease-in-out}
+  .a-hormat .lgn-ka{animation:hormatLengan calc(var(--spd)*3s) infinite ease-in-out}
+  .a-hadap .figur{animation:putarBadan calc(var(--spd)*3.4s) infinite ease-in-out;transform-origin:120px 150px}
+  .a-balik .figur{animation:balikBadan calc(var(--spd)*3.6s) infinite ease-in-out;transform-origin:120px 150px}
+  .a-lencang .lgn-ka{animation:lencangLengan calc(var(--spd)*3s) infinite ease-in-out}
+  .a-jalantempat .kk-ki{animation:lututNaik calc(var(--spd)*.7s) infinite ease-in-out}
+  .a-jalantempat .kk-ka{animation:lututNaik calc(var(--spd)*.7s) infinite ease-in-out reverse}
+  .a-jalantempat .lgn-ka{animation:ayunA calc(var(--spd)*.7s) infinite alternate ease-in-out}
+  .a-jalantempat .lgn-ki{animation:ayunB calc(var(--spd)*.7s) infinite alternate ease-in-out}
+  .a-lari .lgn-ka,.a-lari .kk-ki{animation:ayunA calc(var(--spd)*.42s) infinite alternate ease-in-out}
+  .a-lari .lgn-ki,.a-lari .kk-ka{animation:ayunB calc(var(--spd)*.42s) infinite alternate ease-in-out}
+  .a-lari .figur{animation:bob calc(var(--spd)*.21s) infinite alternate ease-in-out}
+  .a-lompat .figur{animation:lompatFigur calc(var(--spd)*2s) infinite ease-in-out}
+  .a-lompat .lgn-ki,.a-lompat .lgn-ka{animation:lenganAtas calc(var(--spd)*2s) infinite ease-in-out}
+  .a-putar .lgn-ki,.a-putar .lgn-ka{animation:putarPenuh calc(var(--spd)*1.8s) linear infinite}
+  .a-imbang .kk-ka{transform:rotate(40deg)}
+  .a-imbang .lgn-ki{transform:rotate(-76deg)}
+  .a-imbang .lgn-ka{transform:rotate(76deg)}
+  .a-imbang .figur{animation:goyangBadan calc(var(--spd)*2.6s) infinite ease-in-out}
+  .a-lempar .lgn-ka{animation:lemparLengan calc(var(--spd)*2s) infinite ease-in-out}
+  .a-lempar .bola{animation:bolaLempar calc(var(--spd)*2s) infinite ease-out}
+  .a-tendang .kk-ka{animation:tendangKaki calc(var(--spd)*1.8s) infinite ease-in-out}
+  .a-tendang .bola{animation:bolaTendang calc(var(--spd)*1.8s) infinite ease-out}
+
+  /* ---------- gambar ---------- */
+function kecilkan(berkas){
+  return new Promise(ok=>{
+    const r = new FileReader();
+    r.onload = ()=>{
+      const img = new Image();
+      img.onload = ()=>{
+        const maks = 1200; let w = img.width, h = img.height;
+        if(w>maks){ h = Math.round(h*maks/w); w = maks; }
+        if(h>maks){ w = Math.round(w*maks/h); h = maks; }
+        const c = document.createElement("canvas"); c.width=w; c.height=h;
+        c.getContext("2d").drawImage(img,0,0,w,h);
+        try{ ok(c.toDataURL("image/jpeg",0.78)); }catch(e){ ok(r.result); }
+      };
+      img.onerror = ()=> ok(null);
+      img.src = r.result;
+    };
+    r.onerror = ()=> ok(null);
+    r.readAsDataURL(berkas);
+  });
+}
+function blokGambar(m){
+  const g = S.gambar[m.id] || [];
+  if(S.fotoAktif >= g.length) S.fotoAktif = 0;
+  let h = `<h3 style="margin-top:0">🖼️ Gambar peragaan gerak</h3>`;
+  if(g.length===0){
+    h += `<p class="catatan">${S.guru
+      ? "Belum ada gambar. Unggah foto peragaan gerak dari perangkatmu di bawah ini."
+      : "Belum ada gambar untuk pelajaran ini. Lihat animasinya di tab Ayo Lihat, ya!"}</p>`;
+  } else {
+    h += `<img class="foto-besar" src="${g[S.fotoAktif].src}" alt="Gambar ${esc(m.judul)}">`;
+    if(g[S.fotoAktif].judul) h += `<p class="ket-foto">${esc(g[S.fotoAktif].judul)}</p>`;
+    if(g.length>1){
+      h += `<div class="mini" role="group" aria-label="Pilih gambar">` +
+        g.map((x,i)=>`<button data-foto="${i}" aria-pressed="${S.fotoAktif===i}"><img src="${x.src}" alt="Gambar ${i+1}"></button>`).join("") +
+        `</div>`;
+    }
+    if(S.guru) h += `<div class="kendali"><button data-hapusfoto="${S.fotoAktif}">🗑️ Hapus gambar ini</button></div>`;
+  }
+  if(S.guru){
+    h += `<h3>➕ Tambah gambar</h3>
+      <div class="kendali"><label class="unggah">📷 Unggah gambar dari perangkat<input type="file" id="unggahgbr" accept="image/*" multiple></label></div>
+      <div class="isian"><input id="juduldbr" placeholder="Keterangan gambar (boleh kosong)" autocomplete="off"></div>
+      <p class="catatan">Bisa memilih beberapa gambar sekaligus. Gambar otomatis diperkecil agar penyimpanan tidak penuh, dan bisa dilihat tanpa internet.</p>
+      <p class="catatan" id="pesangbr"></p>`;
+  }
+  return h;
+}
+function pasangGambar(m){
+  document.querySelectorAll("[data-foto]").forEach(b=>b.onclick=()=>{ bunyiKlik(); S.fotoAktif = Number(b.dataset.foto); panel(); });
+  document.querySelectorAll("[data-hapusfoto]").forEach(b=>b.onclick=async ()=>{
+    if(!confirm("Hapus gambar ini?")) return;
+    S.gambar[m.id].splice(Number(b.dataset.hapusfoto),1);
+    if(!S.gambar[m.id].length) delete S.gambar[m.id];
+    S.fotoAktif = 0; await simpan(); panel();
+  });
+  const ug = document.getElementById("unggahgbr");
+  if(ug) ug.onchange = async ()=>{
+    const berkas = [...ug.files]; if(!berkas.length) return;
+    const judul = (document.getElementById("juduldbr")||{}).value || "";
+    const kabar = document.getElementById("pesangbr");
+    kabar.textContent = "Sedang memproses gambar...";
+    for(const f of berkas){
+      const data = await kecilkan(f);
+      if(data) (S.gambar[m.id] = S.gambar[m.id] || []).push({src:data, judul:judul.trim()});
+    }
+    const ok = await simpan();
+    S.fotoAktif = (S.gambar[m.id]||[]).length - 1;
+    panel();
+    if(!ok) document.getElementById("pesangbr").textContent = "Gambar tampil, tetapi penyimpanan perangkat penuh sehingga tidak tersimpan permanen.";
+  };
+}
+
+/* ---------- video ---------- */
+  .bingkai{position:relative;width:100%;padding-top:56.25%;border-radius:18px;overflow:hidden;background:#000;margin-top:10px}
+  .bingkai iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  video.video{width:100%;max-height:300px;border-radius:18px;background:#000;margin-top:10px;display:block}
+  .isian{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .isian input{flex:1;min-width:180px;padding:12px 14px;border:3px solid rgba(40,50,74,.14);border-radius:14px;font-family:var(--teks);font-size:15px;background:#fff}
+  .isian input:focus{outline:3px solid var(--biru);outline-offset:1px}
+
+  /* ---------- kuis ---------- */
+  .soal{margin-bottom:24px}
+  .soal .no{font-size:12.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--abu)}
+  .soal .tanya{font-family:var(--judul);font-size:19px;margin:6px 0 12px;line-height:1.3}
+  .pilihan{
+    display:flex;align-items:center;gap:10px;width:100%;text-align:left;margin-bottom:10px;
+    border:3px solid rgba(40,50,74,.12);background:#fff;border-radius:16px;padding:12px 14px;
+    cursor:pointer;font-family:var(--teks);font-size:16px;color:var(--tinta);
+    box-shadow:0 4px 0 rgba(40,50,74,.08);
+  }
+  .pilihan:hover:not(:disabled){border-color:var(--biru)}
+  .pilihan:disabled{cursor:default}
+  .pilihan .huruf{width:30px;height:30px;border-radius:10px;background:var(--krem);display:grid;place-items:center;font-family:var(--judul);flex:none}
+  .pilihan.benar{background:#E4F9EE;border-color:var(--hijau)}
+  .pilihan.benar .huruf{background:var(--hijau);color:#fff}
+  .pilihan.salah{background:#FDE8EE;border-color:var(--merah)}
+  .bahas{font-size:15px;background:var(--krem);border-radius:14px;padding:12px 14px}
+  .skor{background:linear-gradient(135deg,var(--hijau),#7BE0C0);color:#fff;border-radius:20px;padding:20px;text-align:center;margin-top:8px}
+  .skor .wajah{font-size:52px;line-height:1}
+  .skor .angka{font-family:var(--judul);font-size:40px;line-height:1.1}
+
+  .balik{
+    display:inline-flex;align-items:center;gap:8px;background:var(--putih);border:0;border-radius:999px;
+    color:var(--biru);font-family:var(--teks);font-weight:700;font-size:15px;cursor:pointer;
+    padding:10px 18px;margin:18px 0 12px;box-shadow:0 4px 0 rgba(40,50,74,.1);
+  }
+  .balik:focus-visible{outline:3px solid var(--biru);outline-offset:2px}
+
+  .stiker{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+  .stiker span{width:46px;height:46px;border-radius:14px;background:#fff;display:grid;place-items:center;font-size:24px;box-shadow:0 4px 0 rgba(40,50,74,.08)}
+  .stiker span.kunci{opacity:.3;font-size:20px}
+
+  footer{margin-top:30px;text-align:center;font-size:13px;color:var(--abu)}
+
+  .konfeti{position:fixed;inset:0;pointer-events:none;z-index:50;overflow:hidden}
+  .konfeti i{position:absolute;width:10px;height:16px;border-radius:3px;animation:jatuh 1.5s linear forwards}
+  @keyframes jatuh{to{transform:translateY(105vh) rotate(540deg);opacity:0}}
+
+  @media (prefers-reduced-motion:reduce){
+    .maskot,.konfeti i{animation:none!important}
+    .kartu:hover{transform:none}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="kepala-isi">
+    <div class="maskot" id="maskot">🐯</div>
+    <div>
+      <h1>Gerak Ceria</h1>
+      <p>UPT SPF SDN Rappocini · Kelas 1–3</p>
+    </div>
+    <div class="tombol-atas">
+      <button class="kecil" id="btn-suara" aria-pressed="true">🔊 Suara</button>
+      <button class="kecil" id="btn-guru" aria-pressed="false">👩‍🏫 Guru</button>
+    </div>
+  </div>
+</header>
+
+<main class="bungkus" id="isi"></main>
+
+<script>
+/* =======================================================================
+   DATA MATERI
+   ======================================================================= */
+const MATERI = [
+{id:"m1", judul:"Apa Itu Gerak Dasar?", emoji:"🌟", warna:"#FFC93C", kategori:"Pengenalan", anim:"sempurna",
+ ket:"Gerak dasar adalah gerakan pertama yang kita pelajari, seperti jalan, lari, lompat, dan melempar.",
+ def:"Gerak dasar atau fundamental movement adalah gerakan sederhana yang menjadi dasar semua gerakan lain. Gerak dasar dibagi menjadi tiga: gerak lokomotor (berpindah tempat), gerak non-lokomotor (di tempat), dan gerak manipulatif (memakai benda).",
+ tujuan:["Mengenal tiga jenis gerak dasar.","Menyebutkan contoh setiap jenis gerak.","Bersemangat mencoba bergerak."],
+ langkah:["Gerak lokomotor: badan berpindah tempat. Contohnya jalan, lari, dan lompat.","Gerak non-lokomotor: badan bergerak di tempat. Contohnya memutar, mengayun, dan menekuk.","Gerak manipulatif: kita memakai benda. Contohnya melempar, menangkap, dan menendang bola.","Sebelum bergerak, kita selalu melakukan pemanasan.","Bergerak setiap hari membuat badan sehat dan kuat."],
+ main:[{n:"Tebak Gerak",d:"Guru menyebut satu gerakan. Kalau lokomotor, siswa berlari kecil di tempat. Kalau non-lokomotor, siswa berdiri diam sambil memutar lengan."},
+       {n:"Tiga Sudut",d:"Tiga sudut kelas diberi nama lokomotor, non-lokomotor, dan manipulatif. Guru menyebut contoh gerakan, siswa berlari ke sudut yang benar."}],
+ kuis:[{s:"Jalan, lari, dan lompat termasuk gerak...",o:["Lokomotor","Non-lokomotor","Manipulatif"],a:0,x:"Betul! Lokomotor artinya badan kita berpindah tempat."},
+       {s:"Kalau kita bergerak tapi tidak pindah tempat, namanya gerak...",o:["Lokomotor","Non-lokomotor","Berlari"],a:1,x:"Hebat! Non-lokomotor itu bergerak di tempat, seperti memutar lengan."},
+       {s:"Melempar bola termasuk gerak...",o:["Manipulatif","Lokomotor","Tidur"],a:0,x:"Pintar! Manipulatif itu gerakan yang memakai benda."}]},
+
+{id:"m2", judul:"PBB: Sikap Sempurna dan Hormat", emoji:"🎖️", warna:"#EF476F", kategori:"Latihan PBB", anim:"hormat",
+ ket:"Badan tegak, tumit rapat, pandangan lurus ke depan. Tangan kanan naik saat memberi hormat.",
+ def:"PBB adalah Peraturan Baris-Berbaris. Sikap sempurna adalah sikap siap berdiri tegak. Hormat adalah cara memberi salam kepada bendera, guru, atau pemimpin barisan.",
+ tujuan:["Mempraktikkan sikap sempurna dengan benar.","Mempraktikkan gerakan hormat.","Melatih disiplin dan percaya diri."],
+ langkah:["Berdiri tegak, tumit rapat, ujung kaki membuka seperti huruf V.","Tangan lurus di samping badan, jari rapat, ibu jari di jahitan celana.","Dada dibusungkan sedikit, pandangan lurus ke depan.","Untuk hormat, angkat tangan kanan sampai ujung jari menyentuh pelipis.","Turunkan tangan kembali ke samping badan dengan cepat."],
+ main:[{n:"Patung Prajurit",d:"Siswa menahan sikap sempurna sambil dihitung sampai sepuluh. Yang bergerak tersenyum dan mengulang lagi."},
+       {n:"Hormat Bergilir",d:"Guru menunjuk siswa satu per satu untuk memberi hormat. Yang paling rapi menjadi pemimpin barisan."}],
+ kuis:[{s:"Saat sikap sempurna, pandangan mata melihat ke...",o:["Bawah","Lurus ke depan","Samping"],a:1,x:"Benar! Pandangan lurus ke depan supaya badan tegak dan siap."},
+       {s:"Tangan yang dipakai untuk hormat adalah tangan...",o:["Kanan","Kiri","Dua-duanya"],a:0,x:"Tepat! Hormat memakai tangan kanan."},
+       {s:"PBB adalah singkatan dari...",o:["Peraturan Baris-Berbaris","Permainan Bola Basket","Pergi Beli Baju"],a:0,x:"Hebat! PBB artinya Peraturan Baris-Berbaris."}]},
+
+{id:"m3", judul:"PBB: Hadap Kanan, Hadap Kiri, Balik Kanan", emoji:"🧭", warna:"#1C6DD0", kategori:"Latihan PBB", anim:"hadap",
+ ket:"Dengarkan aba-aba dulu, baru bergerak bersama-sama supaya barisan tetap rapi.",
+ def:"Hadap kanan, hadap kiri, dan balik kanan adalah gerakan mengubah arah badan di tempat. Gerakan ini dilakukan setelah mendengar aba-aba dari pemimpin barisan.",
+ tujuan:["Mengenal aba-aba mengubah arah.","Mempraktikkan hadap kanan, hadap kiri, dan balik kanan.","Bergerak serempak bersama teman."],
+ langkah:["Mulai dari sikap sempurna, dengarkan aba-aba dengan tenang.","Hadap kanan: putar badan seperempat putaran ke arah kanan.","Hadap kiri: putar badan seperempat putaran ke arah kiri.","Balik kanan: putar badan setengah putaran lewat sebelah kanan.","Setelah berputar, kembali ke sikap sempurna."],
+ main:[{n:"Aba-aba Cepat",d:"Guru menyebut aba-aba makin cepat. Siswa yang salah arah berpindah ke barisan belakang sambil bertepuk."},
+       {n:"Ikuti Kapten",d:"Satu siswa menjadi kapten yang memberi aba-aba. Teman lain mengikuti gerakannya."}],
+ kuis:[{s:"Hadap kanan artinya badan berputar...",o:["Seperempat ke kanan","Setengah putaran","Satu putaran penuh"],a:0,x:"Betul! Hadap kanan hanya seperempat putaran."},
+       {s:"Balik kanan artinya badan berputar...",o:["Seperempat","Setengah putaran","Tidak berputar"],a:1,x:"Pintar! Balik kanan itu setengah putaran, jadi kita menghadap ke belakang."},
+       {s:"Kita bergerak setelah mendengar...",o:["Aba-aba","Bel istirahat","Suara teman"],a:0,x:"Benar! Kita menunggu aba-aba supaya barisan serempak."}]},
+
+{id:"m4", judul:"PBB: Lencang Depan dan Lencang Kanan", emoji:"📏", warna:"#9B5DE5", kategori:"Latihan PBB", anim:"lencang",
+ ket:"Luruskan lengan untuk mengatur jarak, supaya barisan lurus dan rapi seperti penggaris.",
+ def:"Lencang adalah cara mengatur jarak dalam barisan. Lencang depan mengatur jarak ke depan, lencang kanan mengatur jarak ke samping kanan.",
+ tujuan:["Mempraktikkan lencang depan dan lencang kanan.","Mengatur jarak barisan dengan rapi.","Bekerja sama menjaga kerapian barisan."],
+ langkah:["Mulai dari sikap sempurna dalam barisan.","Lencang depan: angkat tangan kanan lurus ke depan sampai hampir menyentuh bahu teman.","Lencang kanan: rentangkan tangan kanan lurus ke samping.","Palingkan kepala ke kanan dan luruskan barisan.","Aba-aba tegak, turunkan tangan dan kembali ke sikap sempurna."],
+ main:[{n:"Barisan Penggaris",d:"Kelompok berlomba membuat barisan paling lurus dalam waktu sepuluh hitungan."},
+       {n:"Ular Rapi",d:"Siswa berbaris memanjang menjaga jarak satu lengan sambil berjalan mengelilingi lapangan."}],
+ kuis:[{s:"Lencang depan memakai tangan...",o:["Kanan","Kiri","Dua-duanya"],a:0,x:"Betul! Tangan kanan diluruskan ke depan."},
+       {s:"Tujuan lencang adalah...",o:["Mengatur jarak barisan","Beristirahat","Bermain"],a:0,x:"Hebat! Lencang membuat barisan lurus dan rapi."},
+       {s:"Setelah aba-aba tegak, tangan kita...",o:["Diturunkan","Tetap lurus","Diangkat tinggi"],a:0,x:"Benar! Tangan turun kembali ke sikap sempurna."}]},
+
+{id:"m5", judul:"PBB: Jalan di Tempat dan Langkah Tegap", emoji:"🥁", warna:"#FF7A45", kategori:"Latihan PBB", anim:"jalantempat",
+ ket:"Angkat lutut setinggi pinggang, ayunkan lengan berlawanan dengan kaki, ikuti hitungan.",
+ def:"Jalan di tempat adalah gerakan melangkah tanpa berpindah tempat. Langkah tegap adalah langkah berbaris dengan lutut diangkat dan lengan diayun tegas.",
+ tujuan:["Mempraktikkan jalan di tempat mengikuti hitungan.","Mempraktikkan langkah tegap dalam barisan.","Melatih kekompakan bersama teman."],
+ langkah:["Mulai dari sikap sempurna, dengarkan aba-aba jalan di tempat.","Angkat lutut kanan setinggi pinggang, lalu turunkan.","Ganti dengan lutut kiri, bergantian mengikuti hitungan satu dua.","Ayunkan lengan berlawanan dengan kaki yang naik.","Untuk langkah tegap, lakukan gerakan sama sambil melangkah maju."],
+ main:[{n:"Drum Berbaris",d:"Guru menepuk tangan sebagai drum. Siswa jalan di tempat mengikuti kecepatan tepukan."},
+       {n:"Parade Kelas",d:"Kelas berbaris keliling lapangan dengan langkah tegap sambil menyanyikan lagu wajib."}],
+ kuis:[{s:"Saat jalan di tempat, badan kita...",o:["Tidak berpindah","Berlari jauh","Melompat tinggi"],a:0,x:"Betul! Jalan di tempat berarti kaki bergerak tapi badan tetap di tempat."},
+       {s:"Lengan diayunkan berlawanan dengan...",o:["Kaki","Kepala","Teman"],a:0,x:"Pintar! Lengan kanan maju saat kaki kiri naik."},
+       {s:"Lutut diangkat setinggi...",o:["Pinggang","Kepala","Mata kaki"],a:0,x:"Hebat! Lutut setinggi pinggang membuat langkah terlihat tegap."}]},
+
+{id:"m6", judul:"Lokomotor: Jalan dan Lari Seru", emoji:"🏃", warna:"#43C59E", kategori:"Gerak Lokomotor", anim:"lari",
+ ket:"Saat berlari, ayunkan lengan dan mendarat dengan ujung kaki supaya ringan.",
+ def:"Gerak lokomotor adalah gerak yang membuat badan berpindah tempat. Jalan dan lari adalah gerak lokomotor yang paling sering kita lakukan setiap hari.",
+ tujuan:["Mempraktikkan jalan dengan badan tegak.","Mempraktikkan lari dengan ayunan lengan.","Bermain dengan gembira dan menjaga keselamatan."],
+ langkah:["Berdiri tegak, pandangan ke depan, bahu santai.","Berjalan sambil mengayun lengan berlawanan dengan kaki.","Berjalan cepat dengan langkah kecil-kecil.","Berlari pelan sambil mengangkat lutut.","Berlari cepat sepuluh langkah, lalu berhenti pelan-pelan."],
+ main:[{n:"Lampu Lalu Lintas",d:"Merah berhenti, kuning jalan di tempat, hijau lari. Guru menyebut warnanya secara acak."},
+       {n:"Pindah Rumah",d:"Simpai atau kardus ditata melingkar. Saat peluit berbunyi, semua siswa berlari pindah rumah."}],
+ kuis:[{s:"Saat berlari, kaki yang mendarat lebih dulu adalah...",o:["Ujung kaki","Tumit keras","Lutut"],a:0,x:"Betul! Mendarat dengan ujung kaki membuat lari terasa ringan."},
+       {s:"Sebelum berlari cepat kita harus...",o:["Pemanasan","Makan banyak","Tidur"],a:0,x:"Pintar! Pemanasan membuat otot siap dan tidak cedera."},
+       {s:"Jalan dan lari termasuk gerak...",o:["Lokomotor","Manipulatif","Diam"],a:0,x:"Hebat! Keduanya membuat badan berpindah tempat."}]},
+
+{id:"m7", judul:"Lokomotor: Lompat dan Loncat", emoji:"🐸", warna:"#4FB0F4", kategori:"Gerak Lokomotor", anim:"lompat",
+ ket:"Tekuk lutut, ayun lengan ke atas, lalu mendarat dengan lutut mengeper seperti per.",
+ def:"Melompat memakai tolakan satu kaki, sedangkan meloncat memakai tolakan dua kaki. Keduanya termasuk gerak lokomotor karena badan berpindah tempat.",
+ tujuan:["Membedakan lompat dan loncat.","Mempraktikkan tolakan dan pendaratan yang aman.","Berani mencoba tanpa takut."],
+ langkah:["Berdiri dengan kaki dibuka selebar bahu.","Tekuk lutut sedikit seperti mau jongkok.","Ayunkan kedua lengan ke atas sambil menolak.","Mendarat dengan ujung kaki lalu tumit, lutut mengeper.","Lompat memakai satu kaki, loncat memakai dua kaki."],
+ main:[{n:"Katak Meloncat",d:"Siswa meloncat dari simpai satu ke simpai lain dengan dua kaki tanpa menginjak garis."},
+       {n:"Lompat Tali Rendah",d:"Tali dipasang setinggi lutut. Siswa melompat bergantian, tinggi tali ditambah sedikit demi sedikit."}],
+ kuis:[{s:"Meloncat memakai tolakan...",o:["Dua kaki","Satu kaki","Tangan"],a:0,x:"Betul! Meloncat dengan dua kaki, melompat dengan satu kaki."},
+       {s:"Supaya pendaratan aman, lutut harus...",o:["Mengeper","Lurus kaku","Disilang"],a:0,x:"Pintar! Lutut mengeper membuat pendaratan empuk."},
+       {s:"Saat menolak, lengan sebaiknya...",o:["Diayun ke atas","Dilipat di dada","Dimasukkan saku"],a:0,x:"Hebat! Ayunan lengan menambah tenaga lompatan."}]},
+
+{id:"m8", judul:"Non-Lokomotor: Memutar dan Mengayun", emoji:"🌀", warna:"#FFB703", kategori:"Gerak Non-Lokomotor", anim:"putar",
+ ket:"Kaki tetap di tempat. Yang bergerak hanya lengan dan badan, jaga jarak dari teman.",
+ def:"Gerak non-lokomotor adalah gerak yang dilakukan tanpa berpindah tempat. Memutar dan mengayun adalah contoh gerak non-lokomotor yang melatih sendi bahu.",
+ tujuan:["Mempraktikkan gerak memutar lengan.","Mempraktikkan gerak mengayun lengan mengikuti hitungan.","Menjaga jarak aman dengan teman."],
+ langkah:["Berdiri dengan kaki dibuka selebar bahu.","Rentangkan tangan untuk mengukur jarak dengan teman.","Putar kedua lengan ke depan delapan hitungan.","Putar kedua lengan ke belakang delapan hitungan.","Ayunkan lengan ke kanan dan ke kiri seperti gasing."],
+ main:[{n:"Kincir Angin",d:"Siswa memutar lengan mengikuti kecepatan tepukan guru: pelan, sedang, lalu cepat."},
+       {n:"Gasing Berhenti",d:"Siswa mengayun lengan, saat peluit berbunyi semua harus berhenti dan diam seperti patung."}],
+ kuis:[{s:"Gerak memutar lengan dilakukan...",o:["Di tempat","Sambil berlari","Sambil melompat"],a:0,x:"Betul! Non-lokomotor dilakukan tanpa berpindah tempat."},
+       {s:"Supaya tidak mengenai teman, kita perlu...",o:["Menjaga jarak","Berdiri rapat","Menutup mata"],a:0,x:"Pintar! Jarak satu rentangan tangan itu aman."},
+       {s:"Contoh gerak non-lokomotor adalah...",o:["Mengayun lengan","Berlari cepat","Melompat jauh"],a:0,x:"Hebat! Mengayun dilakukan di tempat."}]},
+
+{id:"m9", judul:"Non-Lokomotor: Keseimbangan Kapal Terbang", emoji:"✈️", warna:"#06D6A0", kategori:"Gerak Non-Lokomotor", anim:"imbang",
+ ket:"Berdiri satu kaki, rentangkan tangan, dan pandang satu titik di depan supaya tidak goyah.",
+ def:"Keseimbangan adalah kemampuan menjaga badan supaya tidak jatuh. Sikap kapal terbang adalah keseimbangan berdiri dengan satu kaki dan tangan direntangkan.",
+ tujuan:["Mempraktikkan sikap keseimbangan satu kaki.","Menahan sikap selama beberapa hitungan.","Melatih fokus dan kesabaran."],
+ langkah:["Berdiri tegak, pandangan ke satu titik di depan.","Angkat satu kaki ke belakang, lutut sedikit ditekuk.","Rentangkan kedua tangan ke samping seperti sayap.","Tahan sikap sambil dihitung sampai lima.","Ganti dengan kaki yang lain."],
+ main:[{n:"Patung Kapal Terbang",d:"Saat musik berhenti, siswa menahan sikap kapal terbang. Yang goyah menjadi juri."},
+       {n:"Titian Garis",d:"Siswa berjalan di atas garis lurus dengan tumit menyentuh ujung kaki."}],
+ kuis:[{s:"Sikap kapal terbang bertumpu pada...",o:["Satu kaki","Dua kaki","Dua tangan"],a:0,x:"Betul! Hanya satu kaki yang menapak."},
+       {s:"Supaya seimbang, mata melihat ke...",o:["Satu titik di depan","Bawah kaki","Belakang"],a:0,x:"Pintar! Fokus pada satu titik membuat badan stabil."},
+       {s:"Tangan saat kapal terbang...",o:["Direntangkan","Dimasukkan saku","Di belakang badan"],a:0,x:"Hebat! Tangan direntangkan seperti sayap pesawat."}]},
+
+{id:"m10", judul:"Manipulatif: Lempar Tangkap dan Tendang Bola", emoji:"⚽", warna:"#FF6B6B", kategori:"Gerak Manipulatif", anim:"lempar",
+ ket:"Pandangan ke sasaran saat melempar. Buka telapak tangan seperti mangkuk saat menangkap.",
+ def:"Gerak manipulatif adalah gerakan yang memakai benda, misalnya bola. Melempar, menangkap, dan menendang termasuk gerak manipulatif.",
+ tujuan:["Mempraktikkan lemparan bola ke arah teman.","Mempraktikkan tangkapan bola dengan dua tangan.","Bermain bergantian dengan jujur."],
+ langkah:["Pegang bola dengan dua tangan di depan perut.","Ayunkan bola dari bawah ke arah teman, mata melihat sasaran.","Penangkap membuka dua telapak tangan seperti mangkuk.","Tarik tangan sedikit ke badan saat bola menyentuh telapak.","Untuk menendang, letakkan kaki tumpu di samping bola lalu dorong dengan kaki bagian dalam."],
+ main:[{n:"Lempar Keranjang",d:"Siswa melempar bola kertas ke dalam keranjang dari jarak tiga langkah. Setiap bola masuk dapat satu bintang."},
+       {n:"Operan Lingkaran",d:"Siswa duduk melingkar dan mengoper bola tanpa terjatuh sambil menyebut nama teman."}],
+ kuis:[{s:"Saat menangkap bola, telapak tangan dibuka seperti...",o:["Mangkuk","Kepalan","Pisau"],a:0,x:"Betul! Telapak seperti mangkuk membuat bola tidak lepas."},
+       {s:"Saat melempar, mata melihat ke...",o:["Sasaran","Bawah","Atas"],a:0,x:"Pintar! Melihat sasaran membuat lemparan tepat."},
+       {s:"Menendang bola termasuk gerak...",o:["Manipulatif","Non-lokomotor","Tidur"],a:0,x:"Hebat! Manipulatif itu gerakan yang memakai benda."}]}
+];
+
+const STIKER = ["🌟","🏅","🎈","🚀","🍭","🐬","🌈","⚡","🎯","👑"];
+
+/* =======================================================================
+   PENYIMPANAN
+   ======================================================================= */
+let CARA = "memori";
+function bukaDB(){
+  return new Promise((ok,gagal)=>{
+    if(!window.indexedDB) return gagal();
+    const r = indexedDB.open("gerakceria",1);
+    r.onupgradeneeded = ()=> r.result.createObjectStore("data");
+    r.onsuccess = ()=> ok(r.result);
+    r.onerror = ()=> gagal(r.error);
+  });
+}
+function bungkus(){ return {gambar:S.gambar, video:S.video, bintang:S.bintang, selesai:S.selesai}; }
+function buka(d){
+  if(!d) return;
+  if(d.gambar) S.gambar = {...S.gambar, ...d.gambar};
+  if(d.video) S.video = {...S.video, ...d.video};
+  if(typeof d.bintang === "number") S.bintang = d.bintang;
+  if(d.selesai) S.selesai = {...S.selesai, ...d.selesai};
+}
+async function simpan(){
+  try{
+    const db = await bukaDB();
+    await new Promise((ok,gagal)=>{
+      const t = db.transaction("data","readwrite");
+      t.objectStore("data").put(bungkus(),"app");
+      t.oncomplete = ok; t.onerror = ()=>gagal(t.error);
+    });
+    CARA = "perangkat"; return true;
+  }catch(e){
+    try{ localStorage.setItem("gerakceria", JSON.stringify(bungkus())); CARA="perangkat"; return true; }
+    catch(e2){ CARA="memori"; return false; }
+  }
+}
+async function muat(){
+  if(BAWAAN) buka(BAWAAN);
+  try{
+    const db = await bukaDB();
+    const d = await new Promise((ok,gagal)=>{
+      const t = db.transaction("data","readonly");
+      const q = t.objectStore("data").get("app");
+      q.onsuccess = ()=> ok(q.result); q.onerror = ()=> gagal(q.error);
+    });
+    buka(d); CARA = "perangkat"; return;
+  }catch(e){}
+  try{
+    const t = localStorage.getItem("gerakceria");
+    if(t) buka(JSON.parse(t));
+    CARA = "perangkat";
+  }catch(e2){ CARA = "memori"; }
+}
+/* Isi bawaan yang menempel di dalam berkas saat guru menekan "Unduh aplikasi siap dibagikan" */
+let BAWAAN = null; /*ISI-BAWAAN*/
+
+/* =======================================================================
+   SUARA SEDERHANA
+   ======================================================================= */
+let audio = null;
+function bunyi(nada, panjang){
+  if(!S.suara) return;
+  try{
+    audio = audio || new (window.AudioContext || window.webkitAudioContext)();
+    const o = audio.createOscillator(), g = audio.createGain();
+    o.type = "triangle"; o.frequency.value = nada;
+    g.gain.value = .07;
+    o.connect(g); g.connect(audio.destination);
+    o.start();
+    g.gain.exponentialRampToValueAtTime(.0001, audio.currentTime + panjang);
+    o.stop(audio.currentTime + panjang);
+  }catch(e){}
+}
+const bunyiBenar = ()=>{ bunyi(660,.12); setTimeout(()=>bunyi(880,.18),110); };
+const bunyiSalah = ()=> bunyi(200,.22);
+const bunyiKlik  = ()=> bunyi(520,.06);
+const bunyiHebat = ()=>{ [523,659,784,1047].forEach((n,i)=> setTimeout(()=>bunyi(n,.16), i*130)); };
+
+function konfeti(){
+  if(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const w = document.createElement("div");
+  w.className = "konfeti";
+  const warna = ["#FFC93C","#EF476F","#43C59E","#4FB0F4","#9B5DE5","#FF7A45"];
+  for(let i=0;i<40;i++){
+    const k = document.createElement("i");
+    k.style.left = Math.random()*100 + "%";
+    k.style.top = "-20px";
+    k.style.background = warna[Math.floor(Math.random()*warna.length)];
+    k.style.animationDelay = (Math.random()*.4) + "s";
+    w.appendChild(k);
+  }
+  document.body.appendChild(w);
+  setTimeout(()=> w.remove(), 2200);
+}
+
+/* =======================================================================
+   ANIMASI
+   ======================================================================= */
+function figur(){
+  return `<g class="figur">
+    <circle class="kepala" cx="120" cy="70" r="20"/>
+    <path class="topi" d="M98 62 Q120 40 142 62 Z"/>
+    <line class="baju" x1="120" y1="90" x2="120" y2="140"/>
+    <g class="lgn lgn-ki"><line x1="120" y1="96" x2="88" y2="130"/></g>
+    <g class="lgn lgn-ka"><line x1="120" y1="96" x2="152" y2="130"/></g>
+    <g class="kk kk-ki"><line x1="120" y1="140" x2="100" y2="196"/></g>
+    <g class="kk kk-ka"><line x1="120" y1="140" x2="140" y2="196"/></g>
+  </g>`;
+}
+function svgGerak(a){
+  let isi = figur();
+  if(a==="lempar") isi += `<circle class="bola" cx="156" cy="130" r="13"/>`;
+  if(a==="tendang") isi += `<circle class="bola" cx="152" cy="192" r="14"/>`;
+  return `<svg class="gerak a-${a}" viewBox="0 0 280 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Animasi gerakan">
+    <line class="tanah" x1="16" y1="202" x2="264" y2="202"/>${isi}</svg>`;
+}
+
+/* =======================================================================
+   STATE
+   ======================================================================= */
+const S = { materi:null, tab:0, jawab:{}, jeda:false, lambat:false, fotoAktif:0,
+            gambar:{}, video:{}, bintang:0, selesai:{}, guru:false, suara:true };
+const isi = document.getElementById("isi");
+const esc = t => String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const TAB = ["Apa Itu?","Ayo Lihat","Gambar","Video","Ayo Main","Kuis"];
+
+document.getElementById("btn-suara").onclick = (e)=>{
+  S.suara = !S.suara; bunyiKlik();
+  e.currentTarget.setAttribute("aria-pressed", S.suara);
+  e.currentTarget.textContent = S.suara ? "🔊 Suara" : "🔇 Suara";
+};
+document.getElementById("btn-guru").onclick = (e)=>{
+  S.guru = !S.guru; bunyiKlik();
+  e.currentTarget.setAttribute("aria-pressed", S.guru);
+  render();
+};
+
+function render(){ S.materi!==null ? halamanMateri() : beranda(); window.scrollTo({top:0,behavior:"instant"}); }
+
+/* ---------- beranda ---------- */
+function beranda(){
+  const jml = Object.keys(S.selesai).length;
+  let h = `<div class="sapa">
+      <div style="font-size:34px">🐯</div>
+      <div class="kata">${jml===0
+        ? "Halo, teman! Ayo pilih pelajaran dan bergerak bersama."
+        : `Hebat! Kamu sudah menyelesaikan <b>${jml}</b> dari ${MATERI.length} pelajaran.`}</div>
+      <div class="bintang-kotak">⭐ ${S.bintang}</div>
+    </div>`;
+
+  h += `<div class="judul-bagian">🎒 Pilih Pelajaranmu</div><div class="kisi">`;
+  MATERI.forEach((m,i)=>{
+    h += `<button class="kartu" data-buka="${i}">
+      <span class="ikon" style="background:${m.warna}33">${m.emoji}</span>
+      <span>
+        <span class="nomor">Pelajaran ${i+1} · ${esc(m.kategori)}</span>
+        <span class="jd">${esc(m.judul)}</span>
+      </span>
+      ${S.selesai[m.id]?`<span class="lencana">${STIKER[i]}</span>`:""}
+    </button>`;
+  });
+  h += `</div>`;
+
+  h += `<div class="judul-bagian">🏆 Koleksi Stikermu</div>
+    <div class="stiker">` +
+    MATERI.map((m,i)=> S.selesai[m.id]
+      ? `<span title="${esc(m.judul)}">${STIKER[i]}</span>`
+      : `<span class="kunci" title="Selesaikan kuis untuk membukanya">🔒</span>`).join("") +
+    `</div>
+    <p class="catatan" style="margin-top:10px">Selesaikan kuis di setiap pelajaran untuk mengumpulkan stiker.</p>`;
+
+  if(S.guru){
+    h += `<div class="judul-bagian">👩‍🏫 Menu Guru</div>
+      <div class="panel">
+        <p class="catatan" style="margin:0 0 10px">Buka tab <b>Gambar</b> untuk mengunggah foto peragaan gerak, dan tab <b>Video</b> untuk mengunggah video atau menempel tautan YouTube. Semuanya tersimpan di perangkat ini dan tetap ada setelah aplikasi ditutup.</p>
+        <div class="kendali">
+          <button class="hijau" id="ekspor">💾 Unduh aplikasi siap dibagikan</button>
+          <button id="hapusvideo">🗑️ Hapus semua gambar & video</button>
+          <button id="nolbintang">↺ Atur ulang bintang siswa</button>
+        </div>
+        <p class="catatan" id="pesanguru" style="margin-top:8px"></p>
+      </div>`;
+  }
+
+  h += `<footer>Gerak Ceria · Media belajar PJOK untuk kelas 1–3<br>UPT SPF SDN Rappocini</footer>`;
+  isi.innerHTML = h;
+
+  isi.querySelectorAll("[data-buka]").forEach(b=>b.onclick=()=>{
+    bunyiKlik(); S.materi = Number(b.dataset.buka); S.tab = 0; S.jawab = {}; render();
+  });
+  pasangMenuGuru();
+}
+
+function pasangMenuGuru(){
+  const e = document.getElementById("ekspor");
+  if(e) e.onclick = ()=>{
+    const kabar = document.getElementById("pesanguru");
+    try{
+      const data = JSON.stringify({gambar:S.gambar, video:S.video}).replace(/<\//g,"<\\/");
+      let sumber = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+      sumber = sumber.replace(/(<main[^>]*id="isi"[^>]*>)[\s\S]*?(<\/main>)/, "$1$2");
+      const tanda = "let BAWAAN = null; /*ISI-BAWAAN*/";
+      if(sumber.indexOf(tanda) === -1){ kabar.textContent = "Penanda tidak ditemukan pada berkas ini."; return; }
+      sumber = sumber.replace(tanda, "let BAWAAN = " + data + "; /*ISI-BAWAAN*/");
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(new Blob([sumber],{type:"text/html"}));
+      a.download = "gerak-ceria-siap-dibagikan.html";
+      a.click(); URL.revokeObjectURL(a.href);
+      kabar.textContent = `Berhasil diunduh (sekitar ${(sumber.length/1048576).toFixed(1)} MB). Berkas ini sudah berisi video yang kamu tambahkan.`;
+    }catch(err){ kabar.textContent = "Gagal membuat salinan: " + err.message; }
+  };
+  const hv = document.getElementById("hapusvideo");
+  if(hv) hv.onclick = async ()=>{
+    if(!confirm("Hapus semua gambar dan video di aplikasi ini?")) return;
+    S.gambar = {}; S.video = {}; await simpan(); beranda();
+  };
+  const nb = document.getElementById("nolbintang");
+  if(nb) nb.onclick = async ()=>{
+    if(!confirm("Atur ulang bintang dan stiker siswa?")) return;
+    S.bintang = 0; S.selesai = {}; await simpan(); beranda();
+  };
+}
+
+/* ---------- halaman materi ---------- */
+function halamanMateri(){
+  const m = MATERI[S.materi];
+  let h = `<button class="balik" id="balik">← Kembali</button>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+      <div style="width:56px;height:56px;border-radius:18px;background:${m.warna}33;display:grid;place-items:center;font-size:30px">${m.emoji}</div>
+      <div><div class="catatan" style="font-size:13px">Pelajaran ${S.materi+1} · ${esc(m.kategori)}</div>
+      <h2 style="margin:0">${esc(m.judul)}</h2></div>
+    </div>
+    <div class="tab" role="group" aria-label="Bagian pelajaran">`;
+  TAB.forEach((t,i)=> h += `<button data-tab="${i}" aria-pressed="${S.tab===i}">${t}</button>`);
+  h += `</div><div class="panel" id="panel"></div>`;
+  isi.innerHTML = h;
+
+  document.getElementById("balik").onclick = ()=>{ bunyiKlik(); S.materi=null; render(); };
+  isi.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{
+    bunyiKlik(); S.tab = Number(b.dataset.tab);
+    isi.querySelectorAll("[data-tab]").forEach(x=>x.setAttribute("aria-pressed", Number(x.dataset.tab)===S.tab));
+    panel();
+  });
+  panel();
+}
+
+function panel(){
+  const m = MATERI[S.materi], p = document.getElementById("panel");
+  if(S.tab===0){
+    p.innerHTML = `<h3 style="margin-top:0">📖 Apa itu?</h3>
+      <div class="kotak-def">${esc(m.def)}</div>
+      <h3>🎯 Tujuan Belajar</h3>
+      <ul class="rapi">${m.tujuan.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`;
+  } else if(S.tab===1){
+    p.innerHTML = `<h3 style="margin-top:0">👀 Lihat gerakannya</h3>
+      <div class="panggung">${svgGerak(m.anim)}<p class="ket">${esc(m.ket)}</p></div>
+      <div class="kendali">
+        <button id="jeda" aria-pressed="${S.jeda}">${S.jeda?"▶️ Putar":"⏸️ Berhenti"}</button>
+        <button id="lambat" aria-pressed="${S.lambat}">🐌 Gerak lambat</button>
+      </div>
+      <h3>👣 Ayo lakukan</h3>
+      <ol class="langkah">${m.langkah.map(x=>`<li>${esc(x)}</li>`).join("")}</ol>`;
+    pasangKendali();
+  } else if(S.tab===2){
+    p.innerHTML = blokGambar(m);
+    pasangGambar(m);
+  } else if(S.tab===3){
+    p.innerHTML = blokVideo(m);
+    pasangVideo(m);
+  } else if(S.tab===4){
+    p.innerHTML = `<h3 style="margin-top:0">🎉 Ayo main bersama</h3>` +
+      m.main.map(x=>`<div class="main"><b>${esc(x.n)}</b>${esc(x.d)}</div>`).join("");
+  } else kuis(p,m);
+}
+
+function pasangKendali(){
+  const svg = document.querySelector("svg.gerak"); if(!svg) return;
+  svg.classList.toggle("jeda",S.jeda); svg.classList.toggle("lambat",S.lambat);
+  const j = document.getElementById("jeda"), l = document.getElementById("lambat");
+  j.onclick = ()=>{ bunyiKlik(); S.jeda=!S.jeda; svg.classList.toggle("jeda",S.jeda);
+    j.textContent = S.jeda?"▶️ Putar":"⏸️ Berhenti"; j.setAttribute("aria-pressed",S.jeda); };
+  l.onclick = ()=>{ bunyiKlik(); S.lambat=!S.lambat; svg.classList.toggle("lambat",S.lambat);
+    l.setAttribute("aria-pressed",S.lambat); };
+}
+
+/* ---------- gambar ---------- */
+function kecilkan(berkas){
+  return new Promise(ok=>{
+    const r = new FileReader();
+    r.onload = ()=>{
+      const img = new Image();
+      img.onload = ()=>{
+        const maks = 1200; let w = img.width, h = img.height;
+        if(w>maks){ h = Math.round(h*maks/w); w = maks; }
+        if(h>maks){ w = Math.round(w*maks/h); h = maks; }
+        const c = document.createElement("canvas"); c.width=w; c.height=h;
+        c.getContext("2d").drawImage(img,0,0,w,h);
+        try{ ok(c.toDataURL("image/jpeg",0.78)); }catch(e){ ok(r.result); }
+      };
+      img.onerror = ()=> ok(null);
+      img.src = r.result;
+    };
+    r.onerror = ()=> ok(null);
+    r.readAsDataURL(berkas);
+  });
+}
+function blokGambar(m){
+  const g = S.gambar[m.id] || [];
+  if(S.fotoAktif >= g.length) S.fotoAktif = 0;
+  let h = `<h3 style="margin-top:0">🖼️ Gambar peragaan gerak</h3>`;
+  if(g.length===0){
+    h += `<p class="catatan">${S.guru
+      ? "Belum ada gambar. Unggah foto peragaan gerak dari perangkatmu di bawah ini."
+      : "Belum ada gambar untuk pelajaran ini. Lihat animasinya di tab Ayo Lihat, ya!"}</p>`;
+  } else {
+    h += `<img class="foto-besar" src="${g[S.fotoAktif].src}" alt="Gambar ${esc(m.judul)}">`;
+    if(g[S.fotoAktif].judul) h += `<p class="ket-foto">${esc(g[S.fotoAktif].judul)}</p>`;
+    if(g.length>1){
+      h += `<div class="mini" role="group" aria-label="Pilih gambar">` +
+        g.map((x,i)=>`<button data-foto="${i}" aria-pressed="${S.fotoAktif===i}"><img src="${x.src}" alt="Gambar ${i+1}"></button>`).join("") +
+        `</div>`;
+    }
+    if(S.guru) h += `<div class="kendali"><button data-hapusfoto="${S.fotoAktif}">🗑️ Hapus gambar ini</button></div>`;
+  }
+  if(S.guru){
+    h += `<h3>➕ Tambah gambar</h3>
+      <div class="kendali"><label class="unggah">📷 Unggah gambar dari perangkat<input type="file" id="unggahgbr" accept="image/*" multiple></label></div>
+      <div class="isian"><input id="juduldbr" placeholder="Keterangan gambar (boleh kosong)" autocomplete="off"></div>
+      <p class="catatan">Bisa memilih beberapa gambar sekaligus. Gambar otomatis diperkecil agar penyimpanan tidak penuh, dan bisa dilihat tanpa internet.</p>
+      <p class="catatan" id="pesangbr"></p>`;
+  }
+  return h;
+}
+function pasangGambar(m){
+  document.querySelectorAll("[data-foto]").forEach(b=>b.onclick=()=>{ bunyiKlik(); S.fotoAktif = Number(b.dataset.foto); panel(); });
+  document.querySelectorAll("[data-hapusfoto]").forEach(b=>b.onclick=async ()=>{
+    if(!confirm("Hapus gambar ini?")) return;
+    S.gambar[m.id].splice(Number(b.dataset.hapusfoto),1);
+    if(!S.gambar[m.id].length) delete S.gambar[m.id];
+    S.fotoAktif = 0; await simpan(); panel();
+  });
+  const ug = document.getElementById("unggahgbr");
+  if(ug) ug.onchange = async ()=>{
+    const berkas = [...ug.files]; if(!berkas.length) return;
+    const judul = (document.getElementById("juduldbr")||{}).value || "";
+    const kabar = document.getElementById("pesangbr");
+    kabar.textContent = "Sedang memproses gambar...";
+    for(const f of berkas){
+      const data = await kecilkan(f);
+      if(data) (S.gambar[m.id] = S.gambar[m.id] || []).push({src:data, judul:judul.trim()});
+    }
+    const ok = await simpan();
+    S.fotoAktif = (S.gambar[m.id]||[]).length - 1;
+    panel();
+    if(!ok) document.getElementById("pesangbr").textContent = "Gambar tampil, tetapi penyimpanan perangkat penuh sehingga tidak tersimpan permanen.";
+  };
+}
+
+/* ---------- video ---------- */
+function idYoutube(url){
+  const m = String(url).match(/(?:youtu\.be\/|v=|embed\/|shorts\/|live\/)([A-Za-z0-9_-]{11})/);
+  return m ? m[1] : null;
+}
+function blokVideo(m){
+  const v = S.video[m.id] || [];
+  let h = `<h3 style="margin-top:0">🎬 Video belajar</h3>`;
+  if(v.length===0){
+    h += `<p class="catatan">${S.guru
+      ? "Belum ada video. Tambahkan video dari perangkat atau tempel tautan YouTube di bawah ini."
+      : "Belum ada video untuk pelajaran ini. Lihat gerakannya di tab Ayo Lihat, ya!"}</p>`;
+  }
+  v.forEach((x,i)=>{
+    h += `<div class="main"><b>${esc(x.judul || (x.jenis==="youtube"?"Video YouTube":"Video"))}</b>`;
+    h += x.jenis==="youtube"
+      ? `<div class="bingkai"><iframe src="https://www.youtube.com/embed/${x.id}" title="Video pembelajaran" allowfullscreen loading="lazy"></iframe></div>
+         <p class="catatan" style="margin:8px 0 0">Video YouTube memerlukan internet.</p>`
+      : `<video class="video" src="${x.src}" controls playsinline preload="metadata"></video>`;
+    if(S.guru) h += `<div class="kendali"><button data-hapusvid="${i}">🗑️ Hapus video ini</button></div>`;
+    h += `</div>`;
+  });
+  if(S.guru){
+    h += `<h3>➕ Tambah video</h3>
+      <div class="kendali"><label class="unggah">📁 Unggah video dari perangkat<input type="file" id="unggahvid" accept="video/*"></label></div>
+      <p class="catatan">Ukuran video sebaiknya di bawah 25 MB agar penyimpanan tidak penuh. Video unggahan bisa diputar tanpa internet.</p>
+      <div class="isian">
+        <input id="tautan" placeholder="Tempel tautan YouTube di sini" autocomplete="off">
+        <input id="judulvid" placeholder="Judul video (boleh kosong)" autocomplete="off">
+      </div>
+      <div class="kendali"><button class="biru" id="tambahtautan">🔗 Tambah tautan YouTube</button></div>
+      <p class="catatan" id="pesanvid"></p>`;
+  }
+  return h;
+}
+function pasangVideo(m){
+  document.querySelectorAll("[data-hapusvid]").forEach(b=>b.onclick=async ()=>{
+    if(!confirm("Hapus video ini?")) return;
+    S.video[m.id].splice(Number(b.dataset.hapusvid),1);
+    if(!S.video[m.id].length) delete S.video[m.id];
+    await simpan(); panel();
+  });
+  const uv = document.getElementById("unggahvid");
+  if(uv) uv.onchange = ()=>{
+    const f = uv.files[0]; if(!f) return;
+    const kabar = document.getElementById("pesanvid");
+    if(f.size > 25*1024*1024){ kabar.textContent = "Video terlalu besar (lebih dari 25 MB). Perpendek durasinya dulu."; return; }
+    kabar.textContent = "Sedang memproses video...";
+    const r = new FileReader();
+    r.onload = async ()=>{
+      (S.video[m.id] = S.video[m.id] || []).push({jenis:"berkas", src:r.result, judul:f.name.replace(/\.[^.]+$/,"")});
+      const ok = await simpan(); panel();
+      if(!ok) document.getElementById("pesanvid").textContent = "Video tampil, tetapi penyimpanan perangkat penuh sehingga tidak tersimpan permanen.";
+    };
+    r.onerror = ()=>{ kabar.textContent = "Video gagal dibaca."; };
+    r.readAsDataURL(f);
+  };
+  const tt = document.getElementById("tambahtautan");
+  if(tt) tt.onclick = async ()=>{
+    const url = document.getElementById("tautan").value.trim();
+    const judul = document.getElementById("judulvid").value.trim();
+    const id = idYoutube(url);
+    if(!id){ document.getElementById("pesanvid").textContent = "Tautan belum benar. Salin tautan lengkap dari YouTube."; return; }
+    (S.video[m.id] = S.video[m.id] || []).push({jenis:"youtube", id, judul});
+    await simpan(); panel();
+  };
+}
+
+/* ---------- kuis ---------- */
+function kuis(p,m){
+  const huruf = ["A","B","C","D"];
+  let h = `<h3 style="margin-top:0">🧠 Ayo jawab</h3>
+    <p class="catatan">Pilih satu jawaban. Kalau salah, tidak apa-apa, coba lagi ya!</p>`;
+  m.kuis.forEach((q,i)=>{
+    h += `<div class="soal"><div class="no">Soal ${i+1} dari ${m.kuis.length}</div>
+      <div class="tanya">${esc(q.s)}</div>`;
+    q.o.forEach((o,j)=>{
+      const dijawab = S.jawab[i]!==undefined;
+      let kelas = "pilihan";
+      if(dijawab && j===q.a) kelas += " benar";
+      else if(dijawab && j===S.jawab[i]) kelas += " salah";
+      h += `<button class="${kelas}" data-s="${i}" data-o="${j}" ${dijawab?"disabled":""}>
+        <span class="huruf">${huruf[j]}</span><span>${esc(o)}</span></button>`;
+    });
+    if(S.jawab[i]!==undefined){
+      const tepat = S.jawab[i]===q.a;
+      h += `<div class="bahas">${tepat?"🎉 ":"💪 Belum tepat. "}${esc(q.x)}</div>`;
+    }
+    h += `</div>`;
+  });
+  const selesai = Object.keys(S.jawab).length === m.kuis.length;
+  if(selesai){
+    const benar = m.kuis.filter((q,i)=>S.jawab[i]===q.a).length;
+    const wajah = benar===m.kuis.length ? "🤩" : benar>=2 ? "😀" : "🙂";
+    h += `<div class="skor"><div class="wajah">${wajah}</div>
+      <div class="angka">${benar} dari ${m.kuis.length}</div>
+      <p style="margin:4px 0 0">${benar===m.kuis.length?"Sempurna! Kamu hebat sekali!":"Bagus! Ayo coba lagi supaya makin pintar."}</p></div>
+      <div class="kendali"><button id="ulang">🔁 Kerjakan lagi</button>
+      <button class="biru" id="pulang">🏠 Pilih pelajaran lain</button></div>`;
+  }
+  p.innerHTML = h;
+
+  p.querySelectorAll("[data-s]").forEach(b=>b.onclick=async ()=>{
+    const i = Number(b.dataset.s), j = Number(b.dataset.o);
+    S.jawab[i] = j;
+    const tepat = j === m.kuis[i].a;
+    if(tepat){ bunyiBenar(); konfeti(); } else bunyiSalah();
+    if(Object.keys(S.jawab).length === m.kuis.length){
+      const benar = m.kuis.filter((q,k)=>S.jawab[k]===q.a).length;
+      if(!S.selesai[m.id]){ S.selesai[m.id] = true; S.bintang += benar; await simpan(); bunyiHebat(); }
+    }
+    kuis(p,m);
+  });
+  const u = document.getElementById("ulang");
+  if(u) u.onclick = ()=>{ bunyiKlik(); S.jawab = {}; kuis(p,m); };
+  const pl = document.getElementById("pulang");
+  if(pl) pl.onclick = ()=>{ bunyiKlik(); S.materi = null; S.jawab = {}; render(); };
+}
+
+muat().then(render, render);
+</script>
+</body>
+</html>
